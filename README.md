@@ -139,156 +139,134 @@ The application is pre-configured for GitHub Pages deployment:
 
 ## Database & Backend Integration
 
-### Current State
-The application currently uses **React local state** for managing bookings and invoices. This means:
-- Data is stored temporarily in browser memory
-- Data resets when the page is refreshed
-- No persistent storage
+### Current Implementation: Firebase
 
-### Adding Backend Services
+The application is now integrated with **Firebase** for persistent data storage. All bookings and invoices are automatically saved to your Firebase Firestore database.
 
-Since GitHub Pages only hosts static files, you'll need a separate backend service for database storage. Here are recommended options:
+### Firebase Setup Instructions
 
-#### Option 1: Firebase (Recommended for simplicity)
-- **Free tier**: 1 GB storage, 50K read/write operations per day
-- **Setup**: No backend code needed - Firebase handles everything
-- **Features**: Real-time database, authentication, hosting
+#### Step 1: Create a Firebase Project
 
-```typescript
-// Example: Firebase integration for bookings
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Click "Create a new project"
+3. Enter project name: `overberg-transport-connect`
+4. Enable Google Analytics (optional)
+5. Create the project
 
+#### Step 2: Create a Web App
+
+1. In Firebase Console, click "Create app"
+2. Select "Web" (</>)
+3. Register app name: `Overberg Transport`
+4. Copy your Firebase configuration
+
+#### Step 3: Get Your Credentials
+
+After creating the web app, you'll see configuration like:
+
+```javascript
 const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'your-project.firebaseapp.com',
-  projectId: 'your-project',
-  storageBucket: 'your-project.appspot.com',
-  messagingSenderId: 'YOUR_SENDER_ID',
-  appId: 'YOUR_APP_ID',
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// Save booking
-const saveBooking = async (booking: BookingRequest) => {
-  try {
-    await addDoc(collection(db, 'bookings'), booking);
-  } catch (error) {
-    console.error('Error saving booking:', error);
-  }
+  apiKey: "AIzaSyD...",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef123456"
 };
 ```
 
-#### Option 2: Supabase (PostgreSQL + Real-time)
-- **Free tier**: 500 MB database, unlimited rows
-- **Similar to Firebase but with PostgreSQL backend**
-- **Great for relational data**
+#### Step 4: Add Environment Variables
 
-#### Option 3: Vercel / Netlify Functions
-- **Deploy frontend on Vercel/Netlify (free tier available)**
-- **Use serverless functions for backend API**
-- **Supports Node.js/Python/Go functions**
+1. Copy `.env.example` to `.env.local`:
+   ```sh
+   cp .env.example .env.local
+   ```
 
-```typescript
-// Example: Vercel API route (api/bookings.ts)
-export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    // Save booking to your database
-    const booking = req.body;
-    // ... save logic
-    res.status(200).json({ success: true });
-  }
-}
+2. Edit `.env.local` and add your Firebase credentials:
+   ```
+   VITE_FIREBASE_API_KEY=your_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   ```
+
+**⚠️ Important**: Never commit `.env.local` to Git. It's already in `.gitignore`.
+
+#### Step 5: Enable Firestore Database
+
+1. In Firebase Console, go to "Build" > "Firestore Database"
+2. Click "Create database"
+3. Select "Start in production mode"
+4. Choose your preferred region
+5. Click "Create"
+
+#### Step 6: Set Firestore Security Rules
+
+1. Go to "Firestore Database" > "Rules"
+2. Replace the default rules with:
+
 ```
-
-#### Option 4: Traditional Backend (PHP/Node.js on separate server)
-- **Keep GitHub Pages for frontend**
-- **Host backend API on your own server or cloud provider**
-- **Use API calls to communicate**
-
-```typescript
-// Frontend fetch call
-const handleBookingSubmit = async (booking: BookingRequest) => {
-  const response = await fetch('https://api.yourdomain.com/bookings', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(booking),
-  });
-  const result = await response.json();
-  // Handle response
-};
-```
-
-### Database Schema (PostgreSQL/Firebase)
-
-**Bookings Collection/Table**:
-```json
-{
-  "id": "BK-123456",
-  "passengerName": "John Doe",
-  "passengerEmail": "john@example.com",
-  "passengerPhone": "0719871294",
-  "pickupLocation": "Overberg Town",
-  "dropoffLocation": "Hermanus Beach",
-  "pickupDate": "2026-01-25",
-  "pickupTime": "14:30",
-  "vehicleType": "standard",
-  "passengers": 2,
-  "notes": "Extra luggage",
-  "status": "pending",
-  "estimatedFare": 350,
-  "createdAt": "2026-01-19T10:30:00Z"
-}
-```
-
-**Invoices Collection/Table**:
-```json
-{
-  "id": "INV-123456",
-  "bookingId": "BK-123456",
-  "bookingReference": "BK-123456",
-  "passengerName": "John Doe",
-  "passengerEmail": "john@example.com",
-  "issueDate": "2026-01-19",
-  "dueDate": "2026-02-02",
-  "items": [
-    {
-      "description": "Transport Service (standard vehicle)",
-      "quantity": 1,
-      "unitPrice": 350,
-      "total": 350
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Anyone can read and write bookings
+    match /bookings/{document=**} {
+      allow read, write: if true;
     }
-  ],
-  "subtotal": 350,
-  "tax": 52.50,
-  "total": 402.50,
-  "paymentStatus": "unpaid",
-  "createdAt": "2026-01-19T10:30:00Z"
+    // Anyone can read and write invoices
+    match /invoices/{document=**} {
+      allow read, write: if true;
+    }
+  }
 }
 ```
+
+⚠️ **Security Note**: These rules allow open access for development. For production, implement proper authentication.
+
+### Features Now Enabled
+
+✅ **Persistent Booking Storage** - Bookings save to Firebase Firestore
+✅ **Auto-Generated Invoices** - Invoices created and stored automatically  
+✅ **Booking History** - All bookings loaded and displayed
+✅ **Status Updates** - Update booking status (pending → confirmed → completed)
+✅ **Booking Cancellation** - Cancel bookings directly from the UI
+✅ **Real-time Sync** - Changes reflect immediately across sessions
 
 ### Accessing Your Data
 
-**With Firebase/Supabase**:
-- Use their web dashboard
-- Build a private admin interface (React component)
-- View real-time updates
+#### Option 1: Firebase Console Dashboard
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Select your project
+3. Go to "Firestore Database"
+4. View collections: `bookings` and `invoices`
+5. See all stored data in real-time
 
-**With Custom Backend**:
-- Create admin dashboard: `/admin/dashboard`
-- Protected API routes for admins
-- View bookings, update statuses, generate reports
+#### Option 2: Build an Admin Dashboard (Future)
+Create a private admin interface to:
+- View all bookings and invoices
+- Update payment status
+- Generate reports
+- Export data
+
+### Future Enhancements
+
+- **Authentication**: Add user login for passenger history
+- **Email Notifications**: Send booking confirmations and invoices
+- **Payment Integration**: Add payment processing (Stripe, PayFast)
+- **PDF Generation**: Generate invoice PDFs
+- **Admin Panel**: Manage bookings and view statistics
 
 ### Troubleshooting
 
 - **Blank page**: Ensure `npm run build` was run successfully and `dist/` folder exists
-- **404 errors on routes**: Add a `404.html` file to `dist/` folder and configure GitHub Pages to route it
-- **Static assets not loading**: Check that all files were pushed to GitHub including the `dist/` folder
-- **Bookings not saving**: Currently using local state - implement backend database for persistence
-- **Invoice not generating**: Check browser console for errors, ensure booking submission succeeds first
-- **CORS errors**: If calling external API, ensure backend has CORS enabled
+- **Firebase connection errors**: Check `.env.local` is properly configured with Firebase credentials
+- **"Failed to load bookings" error**: Verify Firestore database is enabled and security rules are set
+- **404 errors on routes**: GitHub Pages will route all URLs to `index.html` for client-side routing
+- **Bookings not appearing**: Check browser console for Firebase errors, ensure `.env.local` is loaded
+- **CORS errors**: Not an issue with Firebase - it handles cross-origin requests
+- **Environment variables not loading**: Restart dev server after updating `.env.local`
 
 ## License
 
