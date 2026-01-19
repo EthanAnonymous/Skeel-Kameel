@@ -1,73 +1,295 @@
-# Welcome to your Lovable project
+# Overberg Transport Connect
 
-## Project info
+A modern web application for transport services built with React, TypeScript, and Tailwind CSS.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Project Setup
 
-## How can I edit this code?
+This project is set up as a static site optimized for deployment on GitHub Pages.
 
-There are several ways of editing your application.
+## Requirements
 
-**Use Lovable**
+- Node.js & npm installed (for local development and building)
+- Git installed
+- GitHub account with a repository
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Build Setup
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Step 1: Navigate to the project directory
+cd overberg-transport-connect-main
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Step 2: Install dependencies
+npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# Step 3: Build the application
+npm run build
 ```
 
-**Edit a file directly in GitHub**
+### Deploy to GitHub Pages
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. **Build locally**: `npm run build` (creates optimized `dist/` folder)
+2. **Push to repository**: 
+   ```sh
+   git add .
+   git commit -m "Build for GitHub Pages"
+   git push origin main
+   ```
+3. **Enable GitHub Pages**:
+   - Go to your repository settings
+   - Navigate to "Pages" section
+   - Set source to `main` branch and `/root` directory
+   - Your site will be available at `https://yourusername.github.io/repository-name/`
 
-**Use GitHub Codespaces**
+### How It Works
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Vite builds the React app into static HTML/CSS/JS files
+- The `dist/` folder contains all static assets
+- GitHub Pages serves these files directly
+- React Router handles client-side navigation automatically
 
-## What technologies are used for this project?
+## Development
+
+### Available Scripts
+
+- `npm run build` - Build for production (creates optimized `dist/` folder)
+- `npm run build:dev` - Build in development mode
+- `npm run lint` - Run ESLint to check code quality
+- `npm test` - Run tests once
+- `npm run test:watch` - Run tests in watch mode
+
+### How it Works
+
+1. **React SPA Build**: `npm run build` creates an optimized production build in the `dist/` folder
+2. **Static Site**: GitHub Pages serves the built files as static HTML/CSS/JS
+3. **Client-Side Routing**: React Router handles all navigation in the browser
+4. **No Server Required**: Everything runs in the browser - no backend server needed for the UI
+
+## Technologies
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Vite** - Build tool (compiles React to static files)
+- **TypeScript** - Type-safe JavaScript
+- **React** - UI library
+- **shadcn-ui** - High-quality UI components
+- **Tailwind CSS** - Utility-first CSS framework
+- **React Hook Form** - Performant form handling
+- **React Query** - Data fetching and caching
+- **React Router** - Client-side navigation
 
-## How can I deploy this project?
+## Features
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Booking System
+- **Online Booking Form**: Customers can book rides directly through the web interface
+- **Vehicle Selection**: Choose between Standard, Premium, and Van options
+- **Fare Estimation**: Real-time fare calculation based on vehicle type
+- **Booking Status Tracking**: Monitor pending, confirmed, completed, and cancelled bookings
+- **Booking History**: View all previous bookings with detailed information
 
-## Can I connect a custom domain to my Lovable project?
+### Invoicing System
+- **Auto-Generated Invoices**: Invoices are automatically created when bookings are submitted
+- **Itemized Charges**: Professional invoice layout with itemized service charges
+- **Tax Calculation**: 15% tax automatically applied to all invoices
+- **Payment Status**: Track invoice payment status (unpaid, paid, overdue)
+- **PDF Export**: Download invoices as PDF (placeholder for backend implementation)
+- **Email Integration**: Send invoices via email (placeholder for backend implementation)
 
-Yes, you can!
+## Project Structure
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```
+src/
+├── components/
+│   ├── ui/                    # shadcn-ui components
+│   ├── BookingForm.tsx        # Main booking form component
+│   ├── InvoiceDisplay.tsx     # Invoice display component
+│   ├── ContactForm.tsx
+│   ├── Footer.tsx
+│   ├── Hero.tsx
+│   ├── NavLink.tsx
+│   ├── RateCard.tsx
+│   └── ReassuranceBar.tsx
+├── hooks/                     # Custom React hooks
+├── lib/
+│   ├── utils.ts              # Utility functions
+│   └── booking-utils.ts      # Booking & invoice utilities
+├── pages/
+│   ├── Index.tsx             # Home page
+│   ├── BookingPage.tsx       # Booking & invoicing page
+│   └── NotFound.tsx
+├── types/
+│   └── booking.ts            # TypeScript types for bookings & invoices
+├── App.tsx                    # Root component
+└── main.tsx                   # Entry point
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+dist/                          # Build output (generated by npm run build)
+server.js                      # Development server (local only)
+```
+
+## Deployment on GitHub Pages
+
+The application is pre-configured for GitHub Pages deployment:
+
+1. **Build**: Run `npm run build` locally
+2. **Push**: Commit and push the built files to your GitHub repository
+3. **Enable**: Go to repository Settings → Pages → select main branch
+4. **Deploy**: GitHub automatically deploys the `dist/` folder
+5. **URL**: Access at `https://yourusername.github.io/repository-name/`
+
+## Database & Backend Integration
+
+### Current State
+The application currently uses **React local state** for managing bookings and invoices. This means:
+- Data is stored temporarily in browser memory
+- Data resets when the page is refreshed
+- No persistent storage
+
+### Adding Backend Services
+
+Since GitHub Pages only hosts static files, you'll need a separate backend service for database storage. Here are recommended options:
+
+#### Option 1: Firebase (Recommended for simplicity)
+- **Free tier**: 1 GB storage, 50K read/write operations per day
+- **Setup**: No backend code needed - Firebase handles everything
+- **Features**: Real-time database, authentication, hosting
+
+```typescript
+// Example: Firebase integration for bookings
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+
+const firebaseConfig = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'your-project.firebaseapp.com',
+  projectId: 'your-project',
+  storageBucket: 'your-project.appspot.com',
+  messagingSenderId: 'YOUR_SENDER_ID',
+  appId: 'YOUR_APP_ID',
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Save booking
+const saveBooking = async (booking: BookingRequest) => {
+  try {
+    await addDoc(collection(db, 'bookings'), booking);
+  } catch (error) {
+    console.error('Error saving booking:', error);
+  }
+};
+```
+
+#### Option 2: Supabase (PostgreSQL + Real-time)
+- **Free tier**: 500 MB database, unlimited rows
+- **Similar to Firebase but with PostgreSQL backend**
+- **Great for relational data**
+
+#### Option 3: Vercel / Netlify Functions
+- **Deploy frontend on Vercel/Netlify (free tier available)**
+- **Use serverless functions for backend API**
+- **Supports Node.js/Python/Go functions**
+
+```typescript
+// Example: Vercel API route (api/bookings.ts)
+export default async function handler(req, res) {
+  if (req.method === 'POST') {
+    // Save booking to your database
+    const booking = req.body;
+    // ... save logic
+    res.status(200).json({ success: true });
+  }
+}
+```
+
+#### Option 4: Traditional Backend (PHP/Node.js on separate server)
+- **Keep GitHub Pages for frontend**
+- **Host backend API on your own server or cloud provider**
+- **Use API calls to communicate**
+
+```typescript
+// Frontend fetch call
+const handleBookingSubmit = async (booking: BookingRequest) => {
+  const response = await fetch('https://api.yourdomain.com/bookings', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(booking),
+  });
+  const result = await response.json();
+  // Handle response
+};
+```
+
+### Database Schema (PostgreSQL/Firebase)
+
+**Bookings Collection/Table**:
+```json
+{
+  "id": "BK-123456",
+  "passengerName": "John Doe",
+  "passengerEmail": "john@example.com",
+  "passengerPhone": "0719871294",
+  "pickupLocation": "Overberg Town",
+  "dropoffLocation": "Hermanus Beach",
+  "pickupDate": "2026-01-25",
+  "pickupTime": "14:30",
+  "vehicleType": "standard",
+  "passengers": 2,
+  "notes": "Extra luggage",
+  "status": "pending",
+  "estimatedFare": 350,
+  "createdAt": "2026-01-19T10:30:00Z"
+}
+```
+
+**Invoices Collection/Table**:
+```json
+{
+  "id": "INV-123456",
+  "bookingId": "BK-123456",
+  "bookingReference": "BK-123456",
+  "passengerName": "John Doe",
+  "passengerEmail": "john@example.com",
+  "issueDate": "2026-01-19",
+  "dueDate": "2026-02-02",
+  "items": [
+    {
+      "description": "Transport Service (standard vehicle)",
+      "quantity": 1,
+      "unitPrice": 350,
+      "total": 350
+    }
+  ],
+  "subtotal": 350,
+  "tax": 52.50,
+  "total": 402.50,
+  "paymentStatus": "unpaid",
+  "createdAt": "2026-01-19T10:30:00Z"
+}
+```
+
+### Accessing Your Data
+
+**With Firebase/Supabase**:
+- Use their web dashboard
+- Build a private admin interface (React component)
+- View real-time updates
+
+**With Custom Backend**:
+- Create admin dashboard: `/admin/dashboard`
+- Protected API routes for admins
+- View bookings, update statuses, generate reports
+
+### Troubleshooting
+
+- **Blank page**: Ensure `npm run build` was run successfully and `dist/` folder exists
+- **404 errors on routes**: Add a `404.html` file to `dist/` folder and configure GitHub Pages to route it
+- **Static assets not loading**: Check that all files were pushed to GitHub including the `dist/` folder
+- **Bookings not saving**: Currently using local state - implement backend database for persistence
+- **Invoice not generating**: Check browser console for errors, ensure booking submission succeeds first
+- **CORS errors**: If calling external API, ensure backend has CORS enabled
+
+## License
+
+MIT

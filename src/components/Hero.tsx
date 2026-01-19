@@ -1,4 +1,5 @@
 import { Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-overberg.jpg";
 
 const Hero = () => {
@@ -33,14 +34,20 @@ const Hero = () => {
           </p>
 
           {/* CTA Button */}
-          <div className="pt-4">
+          <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="tel:0719871294"
-              className="btn-cta text-lg sm:text-xl inline-flex items-center gap-3 px-8 py-4"
+              className="btn-cta text-lg sm:text-xl inline-flex items-center justify-center gap-3 px-8 py-4"
             >
               <Phone className="h-5 w-5 sm:h-6 sm:w-6" />
-              <span>Call Ethan to Book: 071 987 1294</span>
+              <span>Call Ethan: 071 987 1294</span>
             </a>
+            <Link
+              to="/booking"
+              className="btn-cta text-lg sm:text-xl inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+            >
+              <span>Book Online</span>
+            </Link>
           </div>
 
           {/* Trust indicators */}

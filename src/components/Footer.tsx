@@ -1,4 +1,5 @@
 import { Phone, MapPin, Car } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -27,6 +28,13 @@ const Footer = () => {
               <Phone className="h-5 w-5" />
               Ethan: 071 987 1294
             </a>
+            <Link
+              to="/booking"
+              className="flex items-center gap-2 text-lg font-medium hover:text-accent transition-colors"
+            >
+              <Car className="h-5 w-5" />
+              Book Online
+            </Link>
             <div className="flex items-center gap-2 text-primary-foreground/70">
               <MapPin className="h-5 w-5" />
               Serving the Overberg Region
