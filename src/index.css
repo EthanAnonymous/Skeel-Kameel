@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Overberg Transport Design System
+   Navy + Green palette for trust and reliability */
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 215 50% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 50% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 50% 15%;
+
+    /* Navy Blue Primary */
+    --primary: 218 74% 21%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Light slate for secondary surfaces */
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 218 74% 21%;
+
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    /* Green accent for CTAs */
+    --accent: 142 64% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 218 74% 21%;
+
+    --radius: 0.625rem;
+
+    /* Custom tokens */
+    --navy: 218 74% 21%;
+    --navy-light: 218 50% 35%;
+    --green: 142 64% 40%;
+    --green-hover: 142 64% 35%;
+    --slate-light: 210 20% 98%;
+    --slate-row: 210 20% 96%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 218 74% 10%;
+    --foreground: 210 40% 98%;
+
+    --card: 218 74% 12%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 218 74% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 142 64% 45%;
+    --primary-foreground: 218 74% 10%;
+
+    --secondary: 218 50% 20%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 218 50% 20%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 142 64% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 218 50% 20%;
+    --input: 218 50% 20%;
+    --ring: 142 64% 45%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .btn-cta {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-base font-semibold text-accent-foreground shadow-lg transition-all duration-200;
+  }
+
+  .btn-cta:hover {
+    @apply bg-green-hover scale-[1.02] shadow-xl;
+  }
+
+  .btn-cta:active {
+    @apply scale-[0.98];
+  }
+
+  .section-container {
+    @apply mx-auto max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .rate-table {
+    @apply w-full overflow-hidden rounded-xl border border-border bg-card shadow-sm;
+  }
+
+  .rate-table th {
+    @apply bg-primary px-4 py-3 text-left text-sm font-semibold uppercase tracking-wide text-primary-foreground sm:px-6 sm:py-4 sm:text-base;
+  }
+
+  .rate-table td {
+    @apply px-4 py-3 text-sm sm:px-6 sm:py-4 sm:text-base;
+  }
+
+  .rate-table tr:nth-child(even) {
+    @apply bg-secondary;
+  }
+
+  .rate-table tr:nth-child(odd) {
+    @apply bg-card;
+  }
+
+  .rate-table tbody tr {
+    @apply transition-colors duration-150;
+  }
+
+  .rate-table tbody tr:hover {
+    @apply bg-muted;
+  }
+
+  .highlight-box {
+    @apply rounded-xl bg-gradient-to-r from-primary to-navy-light p-6 text-primary-foreground shadow-lg sm:p-8;
+  }
+
+  .footer-section {
+    @apply bg-primary py-10 text-primary-foreground;
+  }
+}
+
+@layer utilities {
+  .bg-green-hover {
+    background-color: hsl(var(--green-hover));
+  }
+
+  .bg-navy {
+    background-color: hsl(var(--navy));
+  }
+
+  .bg-navy-light {
+    background-color: hsl(var(--navy-light));
+  }
+
+  .text-navy {
+    color: hsl(var(--navy));
+  }
+
+  .bg-slate-light {
+    background-color: hsl(var(--slate-light));
+  }
+}
