@@ -139,134 +139,304 @@ The application is pre-configured for GitHub Pages deployment:
 
 ## Database & Backend Integration
 
-### Current Implementation: Firebase
+### Current Implementation: Google Apps Script + Google Sheets
 
-The application is now integrated with **Firebase** for persistent data storage. All bookings and invoices are automatically saved to your Firebase Firestore database.
+The application uses **Google Apps Script** as a middleware API and **Google Sheets** as the database. This approach is free, easy to maintain, and requires no backend server infrastructure.
 
-### Firebase Setup Instructions
+### Google Sheets + Google Apps Script Setup Instructions
 
-#### Step 1: Create a Firebase Project
+#### Step 1: Create a Google Sheet
 
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Click "Create a new project"
-3. Enter project name: `overberg-transport-connect`
-4. Enable Google Analytics (optional)
-5. Create the project
+1. Go to [Google Sheets](https://sheets.google.com/)
+2. Create a new blank spreadsheet
+3. Name it: `Overberg Transport Bookings`
+4. You'll need two sheets: `Bookings` and `Invoices`
 
-#### Step 2: Create a Web App
+#### Step 2: Set Up the Bookings Sheet
 
-1. In Firebase Console, click "Create app"
-2. Select "Web" (</>)
-3. Register app name: `Overberg Transport`
-4. Copy your Firebase configuration
+In the first sheet named `Bookings`, add these column headers in row 1:
+- A: `id`
+- B: `passengerName`
+- C: `passengerPhone`
+- D: `passengerEmail`
+- E: `pickupLocation`
+- F: `dropoffLocation`
+- G: `pickupDate`
+- H: `pickupTime`
+- I: `vehicleType`
+- J: `distanceKm`
+- K: `estimatedFare`
+- L: `status`
+- M: `createdAt`
 
-#### Step 3: Get Your Credentials
+#### Step 3: Set Up the Invoices Sheet
 
-After creating the web app, you'll see configuration like:
+Create a new sheet named `Invoices` and add these column headers:
+- A: `id`
+- B: `bookingId`
+- C: `invoiceNumber`
+- D: `passengerName`
+- E: `passengerEmail`
+- F: `items` (JSON array as string)
+- G: `subtotal`
+- H: `tax`
+- I: `total`
+- J: `paymentStatus`
+- K: `createdAt`
+
+#### Step 4: Create Google Apps Script
+
+1. In your Google Sheet, click "Tools" → "Script Editor"
+2. Replace all code with this template (see full code below):
 
 ```javascript
-const firebaseConfig = {
-  apiKey: "AIzaSyD...",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
-};
+// Google Apps Script Code
+// Paste this entire script into your Google Apps Script editor
+
+const BOOKINGS_SHEET = "Bookings";
+const INVOICES_SHEET = "Invoices";
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const action = data.action;
+    const payload = data.data;
+
+    let result;
+
+    switch (action) {
+      case 'saveBooking':
+        result = saveBooking(payload);
+        break;
+      case 'getBookings':
+        result = getBookings();
+        break;
+      case 'updateBookingStatus':
+        result = updateBookingStatus(payload.bookingId, payload.status);
+        break;
+      case 'cancelBooking':
+        result = cancelBooking(payload.bookingId);
+        break;
+      case 'saveInvoice':
+        result = saveInvoice(payload);
+        break;
+      case 'getInvoices':
+        result = getInvoices();
+        break;
+      case 'updateInvoicePaymentStatus':
+        result = updateInvoicePaymentStatus(payload.invoiceId, payload.paymentStatus);
+        break;
+      default:
+        return ContentService.createTextOutput(JSON.stringify({
+          success: false,
+          error: 'Unknown action'
+        })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      data: result
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      error: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function saveBooking(booking) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(BOOKINGS_SHEET);
+  const row = [
+    booking.id,
+    booking.passengerName,
+    booking.passengerPhone,
+    booking.passengerEmail,
+    booking.pickupLocation,
+    booking.dropoffLocation,
+    booking.pickupDate,
+    booking.pickupTime,
+    booking.vehicleType,
+    booking.distanceKm,
+    booking.estimatedFare,
+    booking.status || 'pending',
+    new Date().toISOString()
+  ];
+  sheet.appendRow(row);
+  return booking;
+}
+
+function getBookings() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(BOOKINGS_SHEET);
+  const data = sheet.getDataRange().getValues();
+  const bookings = [];
+
+  for (let i = 1; i < data.length; i++) {
+    bookings.push({
+      id: data[i][0],
+      passengerName: data[i][1],
+      passengerPhone: data[i][2],
+      passengerEmail: data[i][3],
+      pickupLocation: data[i][4],
+      dropoffLocation: data[i][5],
+      pickupDate: data[i][6],
+      pickupTime: data[i][7],
+      vehicleType: data[i][8],
+      distanceKm: data[i][9],
+      estimatedFare: data[i][10],
+      status: data[i][11],
+      createdAt: data[i][12]
+    });
+  }
+
+  return bookings;
+}
+
+function updateBookingStatus(bookingId, status) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(BOOKINGS_SHEET);
+  const data = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === bookingId) {
+      sheet.getRange(i + 1, 12).setValue(status);
+      return { success: true };
+    }
+  }
+
+  throw new Error('Booking not found');
+}
+
+function cancelBooking(bookingId) {
+  return updateBookingStatus(bookingId, 'cancelled');
+}
+
+function saveInvoice(invoice) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVOICES_SHEET);
+  const row = [
+    invoice.id,
+    invoice.bookingId,
+    invoice.invoiceNumber,
+    invoice.passengerName,
+    invoice.passengerEmail,
+    JSON.stringify(invoice.items),
+    invoice.subtotal,
+    invoice.tax,
+    invoice.total,
+    invoice.paymentStatus || 'unpaid',
+    new Date().toISOString()
+  ];
+  sheet.appendRow(row);
+  return invoice;
+}
+
+function getInvoices() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVOICES_SHEET);
+  const data = sheet.getDataRange().getValues();
+  const invoices = [];
+
+  for (let i = 1; i < data.length; i++) {
+    invoices.push({
+      id: data[i][0],
+      bookingId: data[i][1],
+      invoiceNumber: data[i][2],
+      passengerName: data[i][3],
+      passengerEmail: data[i][4],
+      items: JSON.parse(data[i][5]),
+      subtotal: data[i][6],
+      tax: data[i][7],
+      total: data[i][8],
+      paymentStatus: data[i][9],
+      createdAt: data[i][10]
+    });
+  }
+
+  return invoices;
+}
+
+function updateInvoicePaymentStatus(invoiceId, paymentStatus) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVOICES_SHEET);
+  const data = sheet.getDataRange().getValues();
+
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === invoiceId) {
+      sheet.getRange(i + 1, 10).setValue(paymentStatus);
+      return { success: true };
+    }
+  }
+
+  throw new Error('Invoice not found');
+}
 ```
 
-#### Step 4: Add Environment Variables
+#### Step 5: Deploy as Web App
+
+1. In the Script Editor, click "Deploy" → "New deployment"
+2. Select "Type" → "Web app"
+3. Set "Execute as" → Your Google Account
+4. Set "Who has access" → "Anyone"
+5. Click "Deploy"
+6. Copy the deployment URL (looks like: `https://script.google.com/macros/s/YOUR_ID/usercript`)
+
+#### Step 6: Add Environment Variable
 
 1. Copy `.env.example` to `.env.local`:
    ```sh
    cp .env.example .env.local
    ```
 
-2. Edit `.env.local` and add your Firebase credentials:
+2. Edit `.env.local` and add your deployment URL:
    ```
-   VITE_FIREBASE_API_KEY=your_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=your_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-   VITE_FIREBASE_APP_ID=your_app_id
+   VITE_GAS_DEPLOYMENT_URL=https://script.google.com/macros/s/YOUR_ID/usercript
    ```
 
 **⚠️ Important**: Never commit `.env.local` to Git. It's already in `.gitignore`.
 
-#### Step 5: Enable Firestore Database
-
-1. In Firebase Console, go to "Build" > "Firestore Database"
-2. Click "Create database"
-3. Select "Start in production mode"
-4. Choose your preferred region
-5. Click "Create"
-
-#### Step 6: Set Firestore Security Rules
-
-1. Go to "Firestore Database" > "Rules"
-2. Replace the default rules with:
-
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Anyone can read and write bookings
-    match /bookings/{document=**} {
-      allow read, write: if true;
-    }
-    // Anyone can read and write invoices
-    match /invoices/{document=**} {
-      allow read, write: if true;
-    }
-  }
-}
-```
-
-⚠️ **Security Note**: These rules allow open access for development. For production, implement proper authentication.
-
 ### Features Now Enabled
 
-✅ **Persistent Booking Storage** - Bookings save to Firebase Firestore
-✅ **Auto-Generated Invoices** - Invoices created and stored automatically  
-✅ **Booking History** - All bookings loaded and displayed
-✅ **Status Updates** - Update booking status (pending → confirmed → completed)
-✅ **Booking Cancellation** - Cancel bookings directly from the UI
-✅ **Real-time Sync** - Changes reflect immediately across sessions
+✅ **Persistent Booking Storage** - Bookings save to Google Sheets
+✅ **Auto-Generated Invoices** - Invoices created automatically  
+✅ **Booking History** - All bookings loaded from Google Sheets
+✅ **Status Updates** - Update booking status directly from the UI
+✅ **Booking Cancellation** - Cancel bookings with one click
+✅ **Free Database** - No costs, unlimited usage
 
 ### Accessing Your Data
 
-#### Option 1: Firebase Console Dashboard
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Select your project
-3. Go to "Firestore Database"
-4. View collections: `bookings` and `invoices`
-5. See all stored data in real-time
+#### View Data in Google Sheets
+1. Open your Google Sheet: `Overberg Transport Bookings`
+2. Switch between `Bookings` and `Invoices` sheets
+3. See all data in real-time as bookings are submitted
 
-#### Option 2: Build an Admin Dashboard (Future)
-Create a private admin interface to:
-- View all bookings and invoices
-- Update payment status
-- Generate reports
-- Export data
+#### Edit or Delete Data
+- You can manually edit cells in the sheet
+- Delete rows to remove bookings or invoices
+- All changes take effect immediately
+
+### Advantages of This Approach
+
+✅ **Free** - No hosting or database costs
+✅ **Easy to Manage** - Familiar Google Sheets interface
+✅ **No Backend Infrastructure** - Google handles all hosting
+✅ **Instant Data Access** - View bookings anytime in Google Sheets
+✅ **Automatic Scaling** - No server management needed
+✅ **Data Export** - Easy to export data as CSV or Excel
+
+### Troubleshooting
+
+- **CORS errors**: Make sure deployment is set to "Anyone" access
+- **"Failed to save booking"**: Check that deployment URL is correct in `.env.local`
+- **Data not appearing**: Ensure Google Sheets is accessible and Scripts are deployed
+- **Environment variable not loading**: Restart dev server after updating `.env.local`
+- **Script errors**: Check Google Apps Script execution logs (Execution → View logs)
 
 ### Future Enhancements
 
 - **Authentication**: Add user login for passenger history
-- **Email Notifications**: Send booking confirmations and invoices
-- **Payment Integration**: Add payment processing (Stripe, PayFast)
-- **PDF Generation**: Generate invoice PDFs
-- **Admin Panel**: Manage bookings and view statistics
-
-### Troubleshooting
-
-- **Blank page**: Ensure `npm run build` was run successfully and `dist/` folder exists
-- **Firebase connection errors**: Check `.env.local` is properly configured with Firebase credentials
-- **"Failed to load bookings" error**: Verify Firestore database is enabled and security rules are set
-- **404 errors on routes**: GitHub Pages will route all URLs to `index.html` for client-side routing
-- **Bookings not appearing**: Check browser console for Firebase errors, ensure `.env.local` is loaded
-- **CORS errors**: Not an issue with Firebase - it handles cross-origin requests
-- **Environment variables not loading**: Restart dev server after updating `.env.local`
+- **Email Notifications**: Use Google Mail service to send confirmations
+- **Data Validation**: Add spreadsheet data validation rules
+- **Reports**: Create Google Sheets charts and reports
+- **Backup**: Enable version history in Google Sheets
 
 ## License
 

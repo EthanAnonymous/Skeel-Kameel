@@ -6,7 +6,7 @@ import {
   createAndSaveInvoice,
   updateBookingStatus,
   cancelBooking,
-} from '@/lib/firebase';
+} from '@/lib/google-apps-script';
 import { BookingForm } from '@/components/BookingForm';
 import { InvoiceDisplay } from '@/components/InvoiceDisplay';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
