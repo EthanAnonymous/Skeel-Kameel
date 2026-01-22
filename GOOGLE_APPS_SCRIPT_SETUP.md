@@ -36,7 +36,7 @@ Create a new sheet named "Invoices" and add these headers in row 1:
 
 1. In your Google Sheet, click **Tools** → **Script Editor**
 2. Delete any default code
-3. Paste the complete Google Apps Script code (see [APPS_SCRIPT_CODE.gs](./APPS_SCRIPT_CODE.gs))
+3. Copy the complete code from [APPS_SCRIPT_CODE.gs](./APPS_SCRIPT_CODE.gs) and paste it into the editor
 4. Click **File** → **Save** and name it "Overberg Transport API"
 
 ### 3. Deploy as Web App
@@ -64,7 +64,15 @@ Create a new sheet named "Invoices" and add these headers in row 1:
 
 ## Google Apps Script Code
 
-Copy and paste this entire code into your Google Apps Script editor:
+The complete code is available in [APPS_SCRIPT_CODE.gs](./APPS_SCRIPT_CODE.gs). 
+
+**To use:**
+1. Open the file [APPS_SCRIPT_CODE.gs](./APPS_SCRIPT_CODE.gs)
+2. Copy all the code
+3. Paste it into your Google Apps Script editor (Tools → Script Editor in your Google Sheet)
+4. Save and deploy
+
+**Or copy from here:**
 
 ```javascript
 // Google Apps Script for Overberg Transport Connect
