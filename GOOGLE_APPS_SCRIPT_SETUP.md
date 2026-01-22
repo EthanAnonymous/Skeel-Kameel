@@ -34,10 +34,11 @@ Create a new sheet named "Invoices" and add these headers in row 1:
 
 ### 2. Create Google Apps Script
 
-1. In your Google Sheet, click **Tools** → **Script Editor**
-2. Delete any default code
-3. Copy the complete code from [APPS_SCRIPT_CODE.gs](./APPS_SCRIPT_CODE.gs) and paste it into the editor
-4. Click **File** → **Save** and name it "Overberg Transport API"
+1. In your Google Sheet, click the **Extensions** menu (or **Automations** if available)
+2. Select **Apps Script** to open the script editor
+3. Delete any default code
+4. Copy the complete code from [APPS_SCRIPT_CODE.gs](./APPS_SCRIPT_CODE.gs) and paste it into the editor
+5. Click **File** → **Save** and name it "Overberg Transport API"
 
 ### 3. Deploy as Web App
 
@@ -54,13 +55,24 @@ Create a new sheet named "Invoices" and add these headers in row 1:
 
 1. In your project root, create/edit `.env.local`:
    ```
-   VITE_GAS_DEPLOYMENT_URL=https://script.google.com/macros/d/YOUR_ID/usercript
+   VITE_GAS_DEPLOYMENT_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
    ```
-   Replace `YOUR_ID` with the ID from your deployment URL
+   Replace `YOUR_DEPLOYMENT_ID` with the ID from your deployment URL
 
 2. **Important**: `.env.local` is already in `.gitignore` - never commit it
 
 3. Restart your dev server: `npm run dev`
+
+### 5. Verify Sheet and Apps Script Linking
+
+To ensure your Google Sheet is properly linked to your Apps Script:
+
+1. **In your Google Sheet**, go to the **Extensions** menu → **Apps Script**
+2. You should see the Apps Script editor open with your "Overberg Transport API" project
+3. In the Apps Script editor, you can see the **Project ID** in the project settings (click the gear icon)
+4. The sheet and script are automatically linked when you open the script from the sheet
+
+**Note**: The Apps Script is bound to your Google Sheet. Any time you open the sheet and access Extensions → Apps Script, you'll see this same project.
 
 ## Google Apps Script Code
 
@@ -69,7 +81,7 @@ The complete code is available in [APPS_SCRIPT_CODE.gs](./APPS_SCRIPT_CODE.gs).
 **To use:**
 1. Open the file [APPS_SCRIPT_CODE.gs](./APPS_SCRIPT_CODE.gs)
 2. Copy all the code
-3. Paste it into your Google Apps Script editor (Tools → Script Editor in your Google Sheet)
+3. Paste it into your Google Apps Script editor (Extensions → Apps Script in your Google Sheet)
 4. Save and deploy
 
 **Or copy from here:**
