@@ -3,10 +3,21 @@
 ## Your Current Setup
 
 ✅ **Google Sheet**: https://docs.google.com/spreadsheets/d/1XeC--cAKuNsShOWBGssf0lsBoP49TugocBI613mCW8s
-✅ **Apps Script Deployment URL**: https://script.google.com/macros/s/AKfycbyfcGZLjQgv_ISWQjeVwj-GafwccVZN76SODJ0l-PfyyVe-AHhXtsGn2vk5EveoJeo5vQ/exec
+✅ **Apps Script Deployment URL**: https://script.google.com/macros/s/AKfycbyfcGZLjQgv_ISWQjeVwj-GafwccVZN76SODJ0l-PfyyVe-AHhXtsGn2vk5EveoJeo5vQ/usercript
 ✅ **Environment Variable**: Added to `.env.local`
 
 ## Linking Your Sheet to Apps Script
+
+### Important: Deployment URL Format
+
+Google Apps Script has two endpoint types:
+- **`/exec`** - For direct browser access, has CORS restrictions
+- **`/usercript`** - For API calls from web apps, CORS-enabled ✅
+
+**Always use `/usercript` for this project**. Your URL should end with:
+```
+https://script.google.com/macros/s/AKfycbyfcGZLjQgv_ISWQjeVwj-GafwccVZN76SODJ0l-PfyyVe-AHhXtsGn2vk5EveoJeo5vQ/usercript
+```
 
 ### Step 1: Open Apps Script from Your Sheet
 
@@ -46,7 +57,7 @@ Open your web app and press **F12** → **Console** tab.
 Paste this test (replace with your actual URL):
 
 ```javascript
-fetch('https://script.google.com/macros/s/AKfycbyfcGZLjQgv_ISWQjeVwj-GafwccVZN76SODJ0l-PfyyVe-AHhXtsGn2vk5EveoJeo5vQ/exec', {
+fetch('https://script.google.com/macros/s/AKfycbyfcGZLjQgv_ISWQjeVwj-GafwccVZN76SODJ0l-PfyyVe-AHhXtsGn2vk5EveoJeo5vQ/usercript', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ action: 'getBookings' })
@@ -72,14 +83,37 @@ Should show your deployment URL.
 
 ## Troubleshooting
 
+### Problem: CORS Error - "No 'Access-Control-Allow-Origin' header"
+
+**Error Message**:
+```
+Access to fetch at '...exec' from origin 'http://localhost:5510' has been blocked by CORS policy
+```
+
+**Cause**: Using `/exec` endpoint instead of `/usercript`
+
+**Solution**: 
+1. Edit `.env.local`
+2. Change the URL endpoint from `/exec` to `/usercript`:
+   ```
+   VITE_GAS_DEPLOYMENT_URL=https://script.google.com/macros/s/AKfycbyfcGZLjQgv_ISWQjeVwj-GafwccVZN76SODJ0l-PfyyVe-AHhXtsGn2vk5EveoJeo5vQ/usercript
+   ```
+3. Save the file
+4. Restart dev server: `npm run dev`
+
+**Why**: 
+- `/exec` - For browser-based access directly, has CORS restrictions
+- `/usercript` - For API calls from web apps, CORS-enabled ✅
+
 ### Problem: "Failed to load bookings" on Booking Page
 
 **Check List:**
 
-1. ✅ Is `.env.local` created with the deployment URL?
+1. ✅ Is `.env.local` created with the correct deployment URL?
    ```
-   VITE_GAS_DEPLOYMENT_URL=https://script.google.com/macros/s/AKfycbyfcGZLjQgv_ISWQjeVwj-GafwccVZN76SODJ0l-PfyyVe-AHhXtsGn2vk5EveoJeo5vQ/exec
+   VITE_GAS_DEPLOYMENT_URL=https://script.google.com/macros/s/AKfycbyfcGZLjQgv_ISWQjeVwj-GafwccVZN76SODJ0l-PfyyVe-AHhXtsGn2vk5EveoJeo5vQ/usercript
    ```
+   ⚠️ **Important**: URL must end with `/usercript` not `/exec`
 
 2. ✅ Did you restart dev server after creating `.env.local`?
    ```bash
