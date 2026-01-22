@@ -83,11 +83,54 @@ Should show your deployment URL.
 
 ## Troubleshooting
 
+### Problem: CORS Error Even After Fixing Endpoint
+
+**Error Message**:
+```
+Response to preflight request doesn't pass access control check: 
+No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
+
+**Cause**: Apps Script deployment doesn't have CORS headers configured, or old deployment is cached
+
+**Solution**:
+
+1. **Update your Apps Script code with CORS headers**:
+   - Go to Extensions → Apps Script
+   - Copy the updated code from [APPS_SCRIPT_CODE.gs](./APPS_SCRIPT_CODE.gs)
+   - The new code includes `doOptions()` function and CORS headers on all responses
+   
+2. **Re-deploy your script**:
+   - In Apps Script editor, click **Deploy** button
+   - Click **Manage deployments**
+   - Delete the old deployment (click trash icon)
+   - Click **Deploy** → **New deployment**
+   - Select **Web app**
+   - Execute as: Your Google Account
+   - Who has access: **Anyone**
+   - Click **Deploy**
+   - Copy the new deployment URL
+   - Update `.env.local` with the new URL
+
+3. **Restart dev server**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Clear browser cache**:
+   - Press F12 → DevTools → Settings → Disable cache while DevTools is open
+   - Refresh the page
+
+5. **Test connection again**:
+   - Open browser console (F12)
+   - Paste the test API call
+   - Should now see: `Success: { success: true, data: [] }`
+
 ### Problem: CORS Error - "No 'Access-Control-Allow-Origin' header"
 
 **Error Message**:
 ```
-Access to fetch at '...exec' from origin 'http://localhost:5510' has been blocked by CORS policy
+Access to fetch at '...usercript' from origin 'http://localhost:5510' has been blocked by CORS policy
 ```
 
 **Cause**: Using `/exec` endpoint instead of `/usercript`

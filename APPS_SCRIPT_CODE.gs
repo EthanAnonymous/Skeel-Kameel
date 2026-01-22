@@ -5,6 +5,14 @@
 const BOOKINGS_SHEET = "Bookings";
 const INVOICES_SHEET = "Invoices";
 
+// Handle CORS preflight requests
+function doOptions(e) {
+  return HtmlService.createHtmlOutput()
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
@@ -39,19 +47,31 @@ function doPost(e) {
         return ContentService.createTextOutput(JSON.stringify({
           success: false,
           error: 'Unknown action'
-        })).setMimeType(ContentService.MimeType.JSON);
+        }))
+          .setMimeType(ContentService.MimeType.JSON)
+          .setHeader('Access-Control-Allow-Origin', '*')
+          .setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+          .setHeader('Access-Control-Allow-Headers', 'Content-Type');
     }
 
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       data: result
-    })).setMimeType(ContentService.MimeType.JSON);
+    }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*')
+      .setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+      .setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       error: error.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
+    }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*')
+      .setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+      .setHeader('Access-Control-Allow-Headers', 'Content-Type');
   }
 }
 
