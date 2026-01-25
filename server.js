@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const PORT = 5510;
+const PORT = process.env.PORT || 5510;
 const DIST_DIR = path.join(__dirname, 'dist');
 const INDEX_FILE = path.join(DIST_DIR, 'index.html');
 

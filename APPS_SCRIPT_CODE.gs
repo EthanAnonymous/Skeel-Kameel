@@ -2,8 +2,15 @@
 // This script handles all API calls for booking and invoice management
 // Deploy as a Web App and set "Who has access" to "Anyone"
 
+// Point directly to your Google Sheet by ID
+const SHEET_ID = "YOUR_GOOGLE_SHEET_ID"; // Replace with your actual Sheet ID
 const BOOKINGS_SHEET = "Bookings";
 const INVOICES_SHEET = "Invoices";
+
+// Get the spreadsheet directly by ID
+function getSpreadsheet() {
+  return SpreadsheetApp.openById(SHEET_ID);
+}
 
 // Handle CORS preflight requests
 function doOptions(e) {
@@ -76,7 +83,7 @@ function doPost(e) {
 }
 
 function saveBooking(booking) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(BOOKINGS_SHEET);
+  const sheet = getSpreadsheet().getSheetByName(BOOKINGS_SHEET);
   const row = [
     booking.id,
     booking.passengerName,
@@ -97,7 +104,7 @@ function saveBooking(booking) {
 }
 
 function getBookings() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(BOOKINGS_SHEET);
+  const sheet = getSpreadsheet().getSheetByName(BOOKINGS_SHEET);
   const data = sheet.getDataRange().getValues();
   const bookings = [];
 
@@ -123,7 +130,7 @@ function getBookings() {
 }
 
 function updateBookingStatus(bookingId, status) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(BOOKINGS_SHEET);
+  const sheet = getSpreadsheet().getSheetByName(BOOKINGS_SHEET);
   const data = sheet.getDataRange().getValues();
 
   for (let i = 1; i < data.length; i++) {
@@ -141,7 +148,7 @@ function cancelBooking(bookingId) {
 }
 
 function saveInvoice(invoice) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVOICES_SHEET);
+  const sheet = getSpreadsheet().getSheetByName(INVOICES_SHEET);
   const row = [
     invoice.id,
     invoice.bookingId,
@@ -160,7 +167,7 @@ function saveInvoice(invoice) {
 }
 
 function getInvoices() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVOICES_SHEET);
+  const sheet = getSpreadsheet().getSheetByName(INVOICES_SHEET);
   const data = sheet.getDataRange().getValues();
   const invoices = [];
 
@@ -184,7 +191,7 @@ function getInvoices() {
 }
 
 function updateInvoicePaymentStatus(invoiceId, paymentStatus) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(INVOICES_SHEET);
+  const sheet = getSpreadsheet().getSheetByName(INVOICES_SHEET);
   const data = sheet.getDataRange().getValues();
 
   for (let i = 1; i < data.length; i++) {
