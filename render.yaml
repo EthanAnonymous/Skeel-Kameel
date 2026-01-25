@@ -3,7 +3,7 @@ services:
   - type: web
     name: overberg-transport-web
     runtime: node
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: node server.js
     plan: free
     envVars:
@@ -11,7 +11,7 @@ services:
         value: production
       - key: PORT
         value: 3000
-    repo: https://github.com/your-username/overberg-transport-connect
+    repo: https://github.com/EthanAnonymous/overberg-transport-connect
 
   # Optional: Redis Service (for caching/sessions)
   - type: pserv
