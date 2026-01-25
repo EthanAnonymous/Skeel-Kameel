@@ -3,7 +3,7 @@ services:
   - type: web
     name: overberg-transport-web
     runtime: node
-    buildCommand: npm install && npm run build
+    buildCommand: npm ci && npm run build
     startCommand: node server.js
     plan: free
     envVars:
