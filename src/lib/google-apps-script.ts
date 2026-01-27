@@ -102,27 +102,3 @@ export const fetchAllInvoices = async (): Promise<Invoice[]> => {
     throw error;
   }
 };
-  }
-};
-
-export const fetchAllInvoices = async (): Promise<Invoice[]> => {
-  try {
-    const invoices = await callGoogleAppsScript('getInvoices');
-    return invoices || [];
-  } catch (error) {
-    console.error('Error fetching invoices:', error);
-    throw error;
-  }
-};
-
-export const updateInvoicePaymentStatus = async (invoiceId: string, paymentStatus: string): Promise<void> => {
-  try {
-    await callGoogleAppsScript('updateInvoicePaymentStatus', {
-      invoiceId,
-      paymentStatus,
-    });
-  } catch (error) {
-    console.error('Error updating invoice:', error);
-    throw error;
-  }
-};
