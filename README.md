@@ -1,53 +1,182 @@
 # Overberg Transport Connect
 
-A modern web application for transport services built with React, TypeScript, and Tailwind CSS.
+A modern web application for transport services and booking management built with React, TypeScript, and Tailwind CSS.
 
-## Project Setup
+## ⚡ Quick Start
 
-This project is set up as a static site optimized for deployment on GitHub Pages.
+### Local Development
 
-## Requirements
-
-- Node.js & npm installed (for local development and building)
-- Git installed
-- GitHub account with a repository
-
-## Getting Started
-
-### Build Setup
-
-```sh
-# Step 1: Navigate to the project directory
-cd overberg-transport-connect-main
-
-# Step 2: Install dependencies
+```bash
+# Install dependencies
 npm install
 
-# Step 3: Build the application
+# Start development server (http://localhost:5510)
+npm run dev
+
+# Build for production
 npm run build
 ```
 
-### Deploy to GitHub Pages
+## 🚀 Deployment
 
-1. **Build locally**: `npm run build` (creates optimized `dist/` folder)
-2. **Push to repository**: 
-   ```sh
-   git add .
-   git commit -m "Build for GitHub Pages"
-   git push origin main
-   ```
-3. **Enable GitHub Pages**:
-   - Go to your repository settings
-   - Navigate to "Pages" section
-   - Set source to `main` branch and `/root` directory
-   - Your site will be available at `https://yourusername.github.io/repository-name/`
+**NEW:** Render and Google Apps Script integrations have been removed for a more flexible architecture.
 
-### How It Works
+### Choose Your Stack
 
-- Vite builds the React app into static HTML/CSS/JS files
-- The `dist/` folder contains all static assets
-- GitHub Pages serves these files directly
-- React Router handles client-side navigation automatically
+We recommend **Railway + PostgreSQL** for the best balance of cost, ease, and reliability.
+
+📖 **See [QUICK_DEPLOYMENT_GUIDE.md](QUICK_DEPLOYMENT_GUIDE.md)** for a 5-minute setup guide.
+
+📖 **See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** for detailed options including:
+
+**Hosting Platforms:**
+- ✅ **Railway** (Recommended - $5-15/month)
+- Vercel (Serverless)
+- Netlify (Serverless)
+- Fly.io (Global)
+- AWS (Enterprise)
+
+**Database Options:**
+- ✅ **PostgreSQL** (Recommended - best for bookings/invoices)
+- MongoDB (Flexible)
+- MySQL (Compatible)
+- Supabase (Auto API)
+
+### What's Included
+
+The frontend is framework-agnostic and connects to a REST API. You'll need:
+
+1. **Backend Server** - Node.js/Express API for bookings and invoices
+2. **Database** - PostgreSQL, MongoDB, MySQL, or equivalent
+3. **Hosting** - Railway, Vercel, AWS, etc.
+
+---
+
+## 📋 Project Structure
+
+```
+├── src/
+│   ├── components/          # React UI components
+│   ├── pages/              # Page components
+│   ├── lib/
+│   │   ├── google-apps-script.ts  # Generic API client (update for your backend)
+│   │   └── booking-utils.ts       # Booking logic
+│   ├── types/              # TypeScript types
+│   └── App.tsx
+├── server.js               # Node.js server for static serving
+├── package.json
+├── vite.config.ts
+└── tailwind.config.ts
+```
+
+---
+
+## 🔧 Features
+
+- ✅ Modern React UI with Shadcn/ui components
+- ✅ TypeScript for type safety
+- ✅ Tailwind CSS for styling
+- ✅ Booking form with validation
+- ✅ Invoice generation
+- ✅ Responsive design
+- ✅ SEO optimized
+
+---
+
+## 📝 API Endpoints (To Implement)
+
+Your backend should provide these endpoints:
+
+```
+POST   /api/bookings              # Create booking
+GET    /api/bookings              # Get all bookings
+GET    /api/bookings/:id          # Get booking by ID
+PATCH  /api/bookings/:id/status   # Update booking status
+DELETE /api/bookings/:id          # Cancel booking
+
+POST   /api/invoices              # Create invoice
+GET    /api/invoices              # Get all invoices
+GET    /api/invoices/booking/:id  # Get invoices for booking
+```
+
+---
+
+## 🛠️ Customization
+
+### Update API Endpoint
+
+In your deployment:
+
+```bash
+# Production .env
+VITE_API_URL=https://your-api-domain.com/api
+```
+
+### Modify API Client
+
+Edit `src/lib/google-apps-script.ts` to match your API structure if needed.
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run unit tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run ESLint
+npm run lint
+```
+
+---
+
+## 📚 Documentation
+
+- [QUICK_DEPLOYMENT_GUIDE.md](QUICK_DEPLOYMENT_GUIDE.md) - 5-minute quick start
+- [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) - Detailed setup for all platforms
+- [TROUBLESHOOTING_APPS_SCRIPT.md](TROUBLESHOOTING_APPS_SCRIPT.md) - Common issues (if using legacy setup)
+
+---
+
+## 🤝 Contributing
+
+1. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Commit changes (`git commit -m 'Add amazing feature'`)
+3. Push to branch (`git push origin feature/amazing-feature`)
+4. Open a Pull Request
+
+---
+
+## 📄 License
+
+MIT License - feel free to use this project for any purpose.
+
+---
+
+## ❓ FAQ
+
+**Q: Do I need Google Sheets or Render anymore?**  
+A: No, those integrations have been removed. You can now use any database and hosting platform.
+
+**Q: What database should I use?**  
+A: PostgreSQL is recommended for relational booking data. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for alternatives.
+
+**Q: How much will it cost?**  
+A: Railway + PostgreSQL costs $5-15/month typically, but often covered by free credits. See [QUICK_DEPLOYMENT_GUIDE.md](QUICK_DEPLOYMENT_GUIDE.md) for cost breakdown.
+
+**Q: Can I use this with AWS/Azure/Google Cloud?**  
+A: Yes! Any cloud provider will work. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for setup options.
+
+---
+
+## 📞 Support
+
+For deployment help, check the guides first:
+1. [QUICK_DEPLOYMENT_GUIDE.md](QUICK_DEPLOYMENT_GUIDE.md) - Start here
+2. [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) - Detailed options
 
 ## Development
 
